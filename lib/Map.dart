@@ -19,7 +19,7 @@ class MyMap{
   Future generateBase() async{
 
     _mapList = List();
-    var totalTiles  = width *height;
+    var totalTiles  = width * height;
     int x = 0;
     int y = 0;
 
@@ -51,17 +51,6 @@ class MyMap{
     //generateLlinks();
   }
 
-  void generateLlinks(){
-    if(_mapList != null){
-      _mapList.forEach((tile){
-        if(tile.y > 0) tile.next.up = _mapList.firstWhere((t)=> t.x == tile.x && t.y == tile.y - 1);
-        if(tile.x < width - 1) tile.next.right = _mapList.firstWhere((t)=> t.x == (tile.x + 1) && t.y == tile.y);
-        if(tile.y < height - 1) tile.next.bottom =  _mapList.firstWhere((t)=> t.x == tile.x && t.y == (tile.y + 1));
-        if(tile.x > 0) tile.next.left =  _mapList.firstWhere((t)=> t.x == (tile.x -1) && t.y == tile.y);
-      });
-    }
-  }
-
   List<Tile> getList(){
     return _mapList;
   }
@@ -81,4 +70,5 @@ class MyMap{
       _mapList[yL+(x-1)].next.right = current;
     }
   }
+
 }

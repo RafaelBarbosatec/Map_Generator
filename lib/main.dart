@@ -90,9 +90,11 @@ class _MyHomePageState extends State<MyHomePage> {
       loading = true;
     });
     Future(() => map.generateBase()).then((d){
+
       setState(() {
         loading = false;
       });
+
     });
 
 
