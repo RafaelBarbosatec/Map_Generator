@@ -84,20 +84,19 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void geraMapa() {
+  void geraMapa() async{
 
     setState(() {
       loading = true;
     });
-    Future(() => map.generateBase()).then((d){
+
+    Future(() => map.startGenerator()).then((d){
 
       setState(() {
         loading = false;
       });
 
     });
-
-
 
   }
 

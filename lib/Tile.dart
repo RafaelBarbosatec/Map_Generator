@@ -21,8 +21,11 @@ class Tile{
   double size;
   Pencil pencil;
   Dim tileDim;
+  int limitX;
+  int limitY;
+  int height = 0;
 
-  Tile(this.index, this.x, this.y, this.next, this.isLand, this.size){
+  Tile(this.index, this.x, this.y, this.next, this.isLand, this.size, this.limitX, this.limitY){
     pencil = new Pencil(this);
   }
 
@@ -47,6 +50,10 @@ class Tile{
 
     return checked;
 
+  }
+
+  bool isLimit(){
+    return ( this.x == 0 || this.y == 0 || this.x == this.limitX || this.y == this.limitY );
   }
 
   @override

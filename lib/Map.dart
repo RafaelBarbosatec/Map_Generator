@@ -16,7 +16,14 @@ class MyMap{
   Dim tileDim;
   List<Tile> _mapList;
 
-  Future generateBase() async{
+  void startGenerator() async{
+     await _generateBase();
+     await _sinkBorders();
+     await _smoothMaps(levels: 3);
+    //await _genHeights();
+  }
+
+  Future _generateBase() async{
 
     _mapList = List();
     var totalTiles  = width * height;
@@ -31,10 +38,12 @@ class MyMap{
           y,
           NextTile(),
           Random().nextDouble() < 0.5,
-          2
+          2,
+          width -1,
+          height -1
       );
 
-      addLinks(current);
+      _addLinks(current);
 
       _mapList.add(
           current
@@ -51,11 +60,18 @@ class MyMap{
     //generateLlinks();
   }
 
-  List<Tile> getList(){
-    return _mapList;
+  Future _sinkBorders() async{
+
+    _mapList.where((t)=> t.isLimit()).forEach((tile){
+      tile.isLand = false;
+      tile.surrounds(spread: 5, randomize: true).forEach((tile){
+        tile.isLand = false;
+      });
+    });
+
   }
 
-  void addLinks(Tile current) {
+  void _addLinks(Tile current) {
     int y = current.y;
     int x = current.x;
     if(y > 0){
@@ -69,6 +85,52 @@ class MyMap{
       current.next.left = _mapList[yL+(x-1)];
       _mapList[yL+(x-1)].next.right = current;
     }
+  }
+
+  Future _smoothMaps({levels = 1}) async{
+
+    while(levels > 0){
+
+      _mapList.forEach((tile){
+        var surrounds = tile.surrounds(spread: 2,randomize: true);
+        var wallCount = surrounds.where((t) => t.isLand).length;
+        if(wallCount > (surrounds.length / 2)) tile.isLand = true;
+        if(wallCount < (surrounds.length / 2)) tile.isLand = false;
+      });
+
+      levels--;
+    }
+  }
+
+  Future _genHeights() async {
+
+    List<Tile> highTiles = List();
+    List<Tile> landTiles = _mapList.where((t) => t.isLand).toList();
+    int heightsPct = 2;
+    int highTilesNumber = ( (landTiles.length/100).round() * heightsPct );
+
+    for(var i = 0; i < highTilesNumber; i++){
+      var tile = landTiles[ ( Random().nextDouble() * landTiles.length - 1 ).round() ];
+      tile.height = (Random().nextDouble() * 1000).round();
+      highTiles.add(tile);
+    }
+
+    highTiles.forEach((tile){
+
+      tile.surrounds(spread: 7 + (Random().nextDouble() * 3).round(), randomize: true).forEach((tll){
+        tll.height = ((tll.height + tile.height) / 2.2 + (Random().nextDouble())).round();
+      });
+
+      tile.surrounds(spread: 2 + (Random().nextDouble() * 3).round(), randomize: true).forEach((tll){
+        tll.height = ((tll.height + tile.height) / 1.8 + (Random().nextDouble())).round();
+      });
+
+    });
+
+  }
+
+  List<Tile> getList(){
+    return _mapList;
   }
 
 }
