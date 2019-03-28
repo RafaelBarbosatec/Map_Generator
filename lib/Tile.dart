@@ -51,7 +51,7 @@ class Tile{
 
   @override
   String toString() {
-    return 'Tile{index x: $x, y: $y, isLand: $isLand, next: $next}';
+    return 'Tile{index $index x: $x, y: $y, isLand: $isLand, next: $next}';
   }
 
 
